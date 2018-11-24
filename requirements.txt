@@ -14,3 +14,4 @@ pytest-django
 pytest-factoryboy
 python-dotenv
 requests
+whoosh
