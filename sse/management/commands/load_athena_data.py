@@ -8,26 +8,58 @@ vocabulary_directory = os.path.join("data", "vocabulary")
 
 class Command(BaseCommand):
 
+    entity_field_mapping = {
+        "omop_id": "concept_id",
+        "name": "concept_name",
+        "vocabulary_id": "vocabulary_id",
+        "concept_code": "concept_code",
+    }
+
+    def add_arguments(self, parser):
+        parser.add_argument('--concept-file', type=str)
+        parser.add_argument('--synonyms-file', type=str)
+
     def handle(self, *args, **options):
-        # Load concepts
-        concept_path = os.path.join(vocabulary_directory, "CONCEPT.csv")
-        concept_data = pd.read_csv(concept_path, delimiter="\t")
-        for i in range(concept_data.shape[0]):
-            omop_id = concept_data["concept_id"][i]
-            name = concept_data["concept_name"][i]
-            vocabulary_id = concept_data["vocabulary_id"][i]
-            concept_code = concept_data["concept_code"][i]
-            domain_id = concept_data["domain_id"][i]
-            synonyms = []
-            domain, _ = Domain.objects.get_or_create(name = domain_id)
-            Entity.objects.create(omop_id=omop_id, name=name, 
-                vocabulary_id=vocabulary_id, concept_code=concept_code, 
-                domain=domain)
-        
-        # Load concept synonyms
-        concept_synonym_path = os.path.join(vocabulary_directory, 
-            "CONCEPT_SYNONYM.csv")
-        concept_synonym_data = pd.read_csv(concept_synonym_path, delimiter="\t")
+        self.concept_data = pd.read_csv(
+            options.get('concept_file'),
+            delimiter="\t",
+        )
+        self.synonym_data = pd.read_csv(
+            options.get('synonyms_file'),
+            delimiter="\t",
+        )
+
+        self.domains = self.create_domains(*args, **options)
+        self.entities = self.create_entities(*args, **options)
+        #self.create_synonyms(*args, **options)
+
+    def create_domains(self, *args, **options):
+        domain_ids = self.concept_data["domain_id"].unique()
+        Domain.objects.bulk_create([
+            Domain(name=domain)
+            for domain in domain_ids
+        ])
+        return {domain.name: domain for domain in Domain.objects.all()}
+    
+    def get_domain(self, index):
+        return self.domains[self.concept_data["domain_id"][index]]
+
+    def get_data_as_keywords(self, index):
+        return {
+            model_key: self.concept_data[omop_key][index]
+            for model_key, omop_key in self.entity_field_mapping.items()
+        }
+
+    def create_entities(self, *args, **options):
+        Entity.objects.bulk_create([
+            Entity(
+                domain=self.get_domain(index),
+                **self.get_data_as_keywords(index)
+            ) for index in range(self.concept_data.shape[0])
+        ])
+        return {entity.omop_id: entity for entity in Entity.objects.all()}
+
+    def create_synonyms(self, *args, **options):
         for i in range(concept_synonym_data.shape[0]):
             omop_id = concept_synonym_data["concept_id"][i]
             synonym = concept_synonym_data["concept_synonym_name"][i]
