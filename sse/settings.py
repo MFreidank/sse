@@ -20,7 +20,9 @@ class Base:
         'django.contrib.contenttypes',
         'django.contrib.sessions',
         'django.contrib.messages',
+        'rest_framework',
         'sse',
+        'sse.api',
         'sse.core',
     ]
     LANGUAGE_CODE = 'en-us'
@@ -33,6 +35,11 @@ class Base:
         'django.contrib.messages.middleware.MessageMiddleware',
         'django.middleware.clickjacking.XFrameOptionsMiddleware',
     ]
+    REST_FRAMEWORK = {
+       'DEFAULT_RENDERER_CLASSES': (
+           'rest_framework.renderers.JSONRenderer',
+        )
+    }
     ROOT_URLCONF = 'sse.urls'
     TIME_ZONE = 'UTC'
     USE_I18N = True

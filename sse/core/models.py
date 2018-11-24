@@ -19,11 +19,11 @@ class Domain(models.Model):
 
 
 class Entity(models.Model):
-    concept_code = models.IntegerField()
+    concept_code = models.TextField()
     domain = models.ForeignKey('Domain', on_delete=models.PROTECT)
     entities = models.ManyToManyField('Article')
     name = models.TextField()
-    omop_id = models.TextField()
+    omop_id = models.IntegerField()
     vocabulary_id = models.TextField()
 
 

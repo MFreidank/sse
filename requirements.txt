@@ -1,9 +1,14 @@
 Django
 coveralls
 django-classy-settings
+djangorestframework
+factory-boy
 numpy
 pandas
 pyahocorasick
 pytest
 pytest-cov
+pytest-django
+pytest-factoryboy
 python-dotenv
+requests
