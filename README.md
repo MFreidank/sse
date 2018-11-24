@@ -26,3 +26,10 @@ Then run the server with:
 ```shell
 $ (sse) python3 manage.py runserver
 ```
+
+### Endpoints
+
+Call the autocompletion endpoint with the following `CURL` command:
+```shell
+$ curl -H 'Content-Type: application/json;' --request POST --data '{"query": "As"}' "http://127.0.0.1:8000/api/autocompletion/"
+```
