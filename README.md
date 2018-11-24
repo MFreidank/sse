@@ -53,3 +53,9 @@ npm test
 
 For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
 
+### Endpoints
+
+Call the autocompletion endpoint with the following `CURL` command:
+```shell
+$ curl -H 'Content-Type: application/json;' --request POST --data '{"query": "As"}' "http://127.0.0.1:8000/api/autocompletion/"
+```
