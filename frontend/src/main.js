@@ -6,6 +6,7 @@ import Vuetify from 'vuetify'
 import 'vuetify/dist/vuetify.min.css'
 import App from './App'
 import router from './router'
+import Axios from 'axios'
 
 Vue.use(Vuetify, {
   iconfont: 'mdi',
@@ -16,6 +17,8 @@ Vue.use(Vuetify, {
     error: '#F44336'
   }
 })
+
+Vue.prototype.$http = Axios
 
 Vue.config.productionTip = false
 

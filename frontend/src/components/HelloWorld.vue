@@ -11,6 +11,8 @@
             v-model="selectedFilter"
           >
           </v-treeview>
+          <v-btn @click="fetchData">Submit</v-btn>
+          {{realData}}
         </v-flex>
         <v-flex xs9>
           <v-autocomplete
@@ -84,7 +86,8 @@ export default {
         {id: 7, title: 'Title of last article', text: 'Lorem ipsum dolor sit amet, hair loss sadipscing leukemia, sed diam rat eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet...', date: '30 January 2017', show: false}
       ],
       query: '',
-      selectedFilter: []
+      selectedFilter: [],
+      realData: {}
     }
   },
   watch: {
@@ -140,6 +143,13 @@ export default {
         this.dummyArticles[id].show = false
       }
       return true
+    },
+    fetchData () {
+      const baseURI = 'http://localhost:8000/api/autocompletion'
+      this.$http.post(baseURI, {"query": "As"})
+        .then((result) => {
+          this.realData = result.data
+        })
     }
   },
   filters: {
