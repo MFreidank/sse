@@ -22,12 +22,17 @@ def opts():
     }
 
 
+@pytest.fixture(autouse=True)
+def called_command(args, opts):
+    call_command('load_athena_data', *args, **opts)
+    yield
+
+
 @pytest.mark.django_db
 def test_load_athena_data_creates_domains_correctly(args, opts):
-    call_command('load_athena_data', *args, **opts)
     assert 2 == Domain.objects.count()
+
 
 @pytest.mark.django_db
 def test_load_athena_data_creates_entities_correctly(args, opts):
-    call_command('load_athena_data', *args, **opts)
     assert 4 == Entity.objects.count()
