@@ -1,6 +1,7 @@
 Django
 coveralls
 django-classy-settings
+django-cors-headers
 djangorestframework
 factory-boy
 numpy
