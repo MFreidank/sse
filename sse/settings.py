@@ -13,6 +13,7 @@ class Base:
         ]
     ]
     BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    CORS_ORIGIN_ALLOW_ALL = True
     DATABASE_ENGINE = cbs.env(None, key='DJANGO_DATABASE_ENGINE')
     DATABASE_NAME = cbs.env(None, key='DJANGO_DATABASE_NAME')
     INSTALLED_APPS = [
@@ -20,6 +21,7 @@ class Base:
         'django.contrib.contenttypes',
         'django.contrib.sessions',
         'django.contrib.messages',
+        'corsheaders',
         'rest_framework',
         'sse',
         'sse.api',
@@ -29,6 +31,7 @@ class Base:
     MIDDLEWARE = [
         'django.middleware.security.SecurityMiddleware',
         'django.contrib.sessions.middleware.SessionMiddleware',
+        'corsheaders.middleware.CorsMiddleware',
         'django.middleware.common.CommonMiddleware',
         'django.middleware.csrf.CsrfViewMiddleware',
         'django.contrib.auth.middleware.AuthenticationMiddleware',
