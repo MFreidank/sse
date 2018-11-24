@@ -2,6 +2,7 @@ from django.core.management import call_command
 from django.test import TestCase
 from sse.core.models import Domain
 from sse.core.models import Entity
+from sse.core.models import Synonym
 import os
 import pytest
 
@@ -36,3 +37,8 @@ def test_load_athena_data_creates_domains_correctly(args, opts):
 @pytest.mark.django_db
 def test_load_athena_data_creates_entities_correctly(args, opts):
     assert 4 == Entity.objects.count()
+
+
+@pytest.mark.django_db
+def test_load_athena_data_creates_synonyms_correctly(args, opts):
+    assert 12 == Synonym.objects.count()

@@ -3,6 +3,7 @@ import pandas as pd
 import os
 from sse.core.models import Entity
 from sse.core.models import Domain
+from sse.core.models import Synonym
 
 vocabulary_directory = os.path.join("data", "vocabulary")
 
@@ -31,7 +32,7 @@ class Command(BaseCommand):
 
         self.domains = self.create_domains(*args, **options)
         self.entities = self.create_entities(*args, **options)
-        #self.create_synonyms(*args, **options)
+        self.create_synonyms(*args, **options)
 
     def create_domains(self, *args, **options):
         domain_ids = self.concept_data["domain_id"].unique()
@@ -59,8 +60,14 @@ class Command(BaseCommand):
         ])
         return {entity.omop_id: entity for entity in Entity.objects.all()}
 
+    def get_entity(self, index):
+        return self.entities[self.synonym_data["concept_id"][index]]
+
     def create_synonyms(self, *args, **options):
-        for i in range(concept_synonym_data.shape[0]):
-            omop_id = concept_synonym_data["concept_id"][i]
-            synonym = concept_synonym_data["concept_synonym_name"][i]
-            Entity.objects.get(omop_id=omop_id).synonyms.add(synonym)
+        Synonym.objects.bulk_create([
+            Synonym(
+                entity=self.get_entity(index),
+                name=self.synonym_data["concept_synonym_name"][index],
+            )
+            for index in range(self.synonym_data.shape[0])
+        ])

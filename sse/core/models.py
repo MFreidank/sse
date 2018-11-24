@@ -34,6 +34,11 @@ class Match(models.Model):
     offset = models.IntegerField()
 
 
+class Synonym(models.Model):
+    entity = models.ForeignKey('Entity', on_delete=models.PROTECT)
+    name = models.TextField()
+
+
 class Tag(models.Model):
     articles = models.ManyToManyField('Article')
     description = models.TextField()
