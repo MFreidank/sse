@@ -16,7 +16,8 @@ class EntitySerializer(Serializer):
 class ArticleSerializer(Serializer):
 
     title = serializers.CharField(required=False)
+    abstract = serializers.TextField(required=False)
 
     class Meta:
         model = Article
-        fields = ('title', )
+        fields = ('title', 'abstract')

@@ -23,7 +23,7 @@ class Command(BaseCommand):
     batch_size = 5
     database = "pubmed"
     id_list_key = "IdList"
-    max_documents = 10000
+    max_documents = 100
     rettype = "medline"
     search_terms = ["liver", "Hippopotamus amphibius"]
 
@@ -35,12 +35,12 @@ class Command(BaseCommand):
         parser.add_argument("--entrez-email", nargs=1, type=str)
 
     def load_automaton(self, **options):
-        with open(options.get("automaton_file"), "rb") as automaton_file:
+        with open(options.get("automaton_file")[0], "rb") as automaton_file:
             automaton = pickle.load(automaton_file)
         return automaton
 
     def configure_entrez(self, **options):
-        Entrez.email = options.get("entrez_email")
+        Entrez.email = options.get("entrez_email")[0]
 
     def get_entrez_id_list(self, *, search_term, **options):
         handle = Entrez.esearch(
@@ -100,6 +100,7 @@ class Command(BaseCommand):
                 **self.get_article_data_as_keywords(record)
             )
             for record in self.records
+            if "AB" in record
         ])
 
     def create_vocabulary_matches(self, *args, **options):
