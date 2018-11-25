@@ -1,9 +1,10 @@
 <template>
-  <div>
-    <v-toolbar-title>    <mv-toolbar-img >
-        <img class="logo" src="./../../static/hippo.png" alt="Avatar">
-    </mv-toolbar-img> SSE Semantic Search Engine </v-toolbar-title>
-  </div>
+  <v-layout row>
+    <v-avatar>
+      <img class="logo" src="./../../static/hippo.png" alt="Avatar">
+    </v-avatar>
+    <v-toolbar-title class="mt-2"> SSE Semantic Search Engine </v-toolbar-title>
+  </v-layout>
 </template>
 
 <script>
