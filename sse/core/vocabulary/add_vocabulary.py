@@ -41,9 +41,9 @@ def add_concepts(automaton, concepts):
     return automaton
 
 
-def update_automaton(dataframe, automaton_filename=path.join(PROCESSED_DATA_PATH, "vocabulary_automaton.pkl")):
+def update_automaton(dataframe, automaton_filename=path.join(PROCESSED_DATA_PATH, "vocabulary_automaton.pkl"), name_column="concept_name"):
     # Assert we have the same amount of concept names and ids.
-    assert len(dataframe["concept_name"] == dataframe["concept_id"])
+    assert len(dataframe[name_column] == dataframe["concept_id"])
 
     try:
         with open(automaton_filename, "rb") as automaton_file:
@@ -54,7 +54,7 @@ def update_automaton(dataframe, automaton_filename=path.join(PROCESSED_DATA_PATH
         logging.info("Created new automaton.")
         automaton = Automaton()
 
-    automaton = add_concepts(automaton, zip(dataframe["concept_name"], dataframe["concept_id"]))
+    automaton = add_concepts(automaton, zip(dataframe[name_column], dataframe["concept_id"]))
 
     automaton.make_automaton()
 
@@ -69,6 +69,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("zip_filepath")
     parser.add_argument("--concepts-filename", default="CONCEPT.csv")
+    parser.add_argument("--synonyms-filename", default="CONCEPT_SYNONYM.csv")
     parser.add_argument("--seperator", default="\t")
 
     args = parser.parse_args()
@@ -85,6 +86,12 @@ def main():
     assert len(dataframe["concept_name"] == dataframe["concept_id"])
 
     update_automaton(dataframe)
+
+    synonyms_dataframe = pd.read_csv(
+        path.join(folder_name, args.synonyms_filename), sep=args.seperator
+    ).dropna(subset=["concept_synonym_name"])
+
+    update_automaton(synonyms_dataframe, name_column="concept_synonym_name")
 
 
 if __name__ == "__main__":
