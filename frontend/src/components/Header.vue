@@ -3,7 +3,7 @@
     <v-avatar>
       <img class="logo" src="./../../static/hippo.png" alt="Avatar">
     </v-avatar>
-    <v-toolbar-title class="mt-2"> SSE Semantic Search Engine </v-toolbar-title>
+    <v-toolbar-title class="mt-2"> Hippocrates </v-toolbar-title>
   </v-layout>
 </template>
 
