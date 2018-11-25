@@ -1,4 +1,5 @@
 Django
+biopython
 coveralls
 django-classy-settings
 django-cors-headers

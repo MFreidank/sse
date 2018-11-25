@@ -8,9 +8,9 @@ class Article(models.Model):
 
 
 class Author(models.Model):
-    affiliation = models.TextField()
+    affiliation = models.TextField(null=True)
     articles = models.ManyToManyField('Article')
-    email = models.EmailField()
+    email = models.EmailField(null=True)
     name = models.TextField()
 
 
@@ -32,6 +32,11 @@ class Match(models.Model):
     entity = models.ForeignKey('Entity', on_delete=models.PROTECT)
     length = models.IntegerField()
     offset = models.IntegerField()
+
+
+class Synonym(models.Model):
+    entity = models.ForeignKey('Entity', on_delete=models.PROTECT)
+    name = models.TextField()
 
 
 class Tag(models.Model):
