@@ -24,7 +24,7 @@ class Command(BaseCommand):
     id_list_key = "IdList"
     max_documents = 10
     rettype = "medline"
-    search_term = "liver"
+    search_terms = ["liver", "Hippopotamus amphibius"]
 
     def add_arguments(self, parser):
         default_api_key = os.environ.get("AZURE_COGNITIVE_API_KEY", None)
@@ -41,20 +41,20 @@ class Command(BaseCommand):
     def configure_entrez(self, **options):
         Entrez.email = options.get("entrez_email")
 
-    def get_entrez_id_list(self, **options):
+    def get_entrez_id_list(self, *, search_term, **options):
         handle = Entrez.esearch(
             db=self.database,
             retmax=self.max_documents,
-            term=self.search_term,
+            term=search_term,
         )
         results = Entrez.read(handle)
         return results[self.id_list_key]
 
-    def get_entrez_records(self, *args, **options):
+    def get_entrez_records(self, *args, search_term, **options):
         handle = Entrez.efetch(
             db=self.database,
             retmax=self.max_documents,
-            id=self.get_entrez_id_list(**options),
+            id=self.get_entrez_id_list(search_term=search_term, **options),
             rettype=self.rettype,
         )
         return self.filter_records(Medline.parse(handle))
@@ -69,14 +69,15 @@ class Command(BaseCommand):
         ))
 
     def handle(self, *args, **options):
-        # create entrez data
-        self.records = self.get_entrez_records(*args, **options)
-        self.create_articles(*args, **options)
-        self.create_vocabulary_matches(*args, **options)
-        self.create_authors(*args, **options)
-        self.assign_articles_to_authors(*args, **options)
-        self.create_tags(*args, **options)
-        self.assign_tags_to_articles(*args, **options)
+        for search_term in self.search_terms:
+            # create entrez data
+            self.records = self.get_entrez_records(*args, search_term=search_term, **options)
+            self.create_articles(*args, **options)
+            self.create_vocabulary_matches(*args, **options)
+            self.create_authors(*args, **options)
+            # self.assign_articles_to_authors(*args, **options)
+            # self.create_tags(*args, **options)
+            # self.assign_tags_to_articles(*args, **options)
 
         # create azure data
         self.cognitive_batches = self.get_cognitive_batches(*args, **options)
@@ -95,7 +96,6 @@ class Command(BaseCommand):
             )
             for record in self.records
         ])
-
 
     def create_vocabulary_matches(self, *args, **options):
         self.automaton = self.load_automaton(*args, **options)
@@ -151,7 +151,6 @@ class Command(BaseCommand):
 
     def create_matches_from_azure_cognitive_document(self, records_index, document):
         found_entities = document.get('entities')
-
         entity_names = {entity['name'] for entity in found_entities}
 
         automaton_matches = {
@@ -160,31 +159,43 @@ class Command(BaseCommand):
             for _, (omop_id, _) in generate_matches(self.automaton, entity_name)
         }
 
-        matches = []
+        filtered_matches = {}
         for omop_id, entity_name in automaton_matches.items():
-            matches.append(Match(
+            filtered_set = [
+                entity
+                for entity in found_entities
+                if entity['name'] == entity_name
+            ]
+            filtered_matches[omop_id] = [
+                match
+                for automaton_match in filtered_set
+                for match in automaton_match['matches']
+            ]
 
-            ))
-            filtered_set = [entity for entity in found_entities if entity['name'] == entity_name]
-            import pdb
-            pdb.set_trace()
+        entities = {
+            entity.omop_id: entity
+            for entity in Entity.objects.all()
+        }
+
+        article = Article.objects.get(
+            **self.get_article_data_as_keywords(self.records[records_index])
+        )
 
         Match.objects.bulk_create([
             Match(
-                article=self.get_article_for_document_id(document_id), # todo
-                entity=entities[omop_id],                 # todo
+                article=article,
+                entity=entities[omop_id],
                 length=match.get('length'),
                 offset=match.get('offset'),
             )
-            for entity in found_entities
-            for omop_id in omop_ids
-            for match in entity['matches']
+            for omop_id, matches in filtered_matches.items()
+            for match in matches
         ])
 
     def create_authors(self, *args, **options):
 
         def get_email(record):
-            email = re.findall(r"[\w\.-]+@[\w\.-]+", record.get("AD"))
+            email = re.findall(r"[\w\.-]+@[\w\.-]+", record.get("AD", ""))
             if email:
                 return email[0].strip('.')
             return None

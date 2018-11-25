@@ -8,7 +8,7 @@ class Article(models.Model):
 
 
 class Author(models.Model):
-    affiliation = models.TextField()
+    affiliation = models.TextField(null=True)
     articles = models.ManyToManyField('Article')
     email = models.EmailField(null=True)
     name = models.TextField()
