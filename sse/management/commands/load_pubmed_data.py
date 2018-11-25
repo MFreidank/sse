@@ -8,6 +8,7 @@ from sse.core.models import Entity
 from sse.core.models import Match
 from sse.core.models import Tag
 from sse.core.vocabulary.match_text import generate_matches
+import logging
 import os
 import pickle
 import re
@@ -22,7 +23,7 @@ class Command(BaseCommand):
     batch_size = 5
     database = "pubmed"
     id_list_key = "IdList"
-    max_documents = 10
+    max_documents = 100
     rettype = "medline"
     search_terms = ["liver", "Hippopotamus amphibius"]
 
@@ -34,12 +35,12 @@ class Command(BaseCommand):
         parser.add_argument("--entrez-email", nargs=1, type=str)
 
     def load_automaton(self, **options):
-        with open(options.get("automaton_file"), "rb") as automaton_file:
+        with open(options.get("automaton_file")[0], "rb") as automaton_file:
             automaton = pickle.load(automaton_file)
         return automaton
 
     def configure_entrez(self, **options):
-        Entrez.email = options.get("entrez_email")
+        Entrez.email = options.get("entrez_email")[0]
 
     def get_entrez_id_list(self, *, search_term, **options):
         handle = Entrez.esearch(
@@ -72,9 +73,13 @@ class Command(BaseCommand):
         for search_term in self.search_terms:
             # create entrez data
             self.records = self.get_entrez_records(*args, search_term=search_term, **options)
+            logging.info("Created all the records")
             self.create_articles(*args, **options)
+            logging.info("Created all the articles")
             self.create_vocabulary_matches(*args, **options)
+            logging.info("Created the vocabulary matches")
             self.create_authors(*args, **options)
+            logging.info("Created the authors")
             # self.assign_articles_to_authors(*args, **options)
             # self.create_tags(*args, **options)
             # self.assign_tags_to_articles(*args, **options)
@@ -95,6 +100,7 @@ class Command(BaseCommand):
                 **self.get_article_data_as_keywords(record)
             )
             for record in self.records
+            if "AB" in record
         ])
 
     def create_vocabulary_matches(self, *args, **options):

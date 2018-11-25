@@ -12,7 +12,7 @@ from .serializers import ArticleSerializer
 class AutocompletionView(ListAPIView):
 
     allowed_methods = ['post']
-    queryset = Entity.objects.all()
+    queryset = Entity.objects.filter(match__isnull=False)
 
     def filter_queryset(self, queryset):
         query = self.request.data.get('query')

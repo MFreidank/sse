@@ -48,6 +48,7 @@ def called_commands(args, opts, athena_args, athena_opts):
     yield
 
 
+@pytest.mark.skip
 @pytest.mark.django_db
 def test_load_pubmed_data_creates_domains_correctly():
     assert False
