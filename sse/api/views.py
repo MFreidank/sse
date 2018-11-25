@@ -38,7 +38,7 @@ class SearchView(ListAPIView):
         )
 
     def filter_queryset(self, queryset):
-        entities = self.request.data.get('entities')
+        entities = self.request.data.get('query')
         return queryset.filter(SearchView.get_filter(entities))
 
     def post(self, request, *args, **kwargs):
