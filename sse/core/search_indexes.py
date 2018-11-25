@@ -4,8 +4,8 @@ from sse.core.models import Article
 
 class ArticleIndex(indexes.SearchIndex, indexes.Indexable):
 
-    abstract = indexes.TextField(document=True, use_template=True)
-    title = indexes.TextField(model_attr="address")
+    abstract = indexes.CharField(document=True, use_template=True)
+    title = indexes.CharField(model_attr="address")
 
     @staticmethod
     def prepare_autocomplete(obj):

@@ -19,7 +19,7 @@ class Base:
     HAYSTACK_CONNECTIONS = {
         'default': {
             'ENGINE': 'haystack.backends.whoos_backend.WhooshEngine',
-            'PATH', os.path.join(BASE_DIR, 'whoooosh.idx'),
+            'PATH': os.path.join(BASE_DIR, 'whoooosh.idx'),
         }
     }
     INSTALLED_APPS = [
