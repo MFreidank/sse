@@ -1,11 +1,16 @@
+from sse.core import models
+from faker import Faker
 import factory
 
-from sse.core import models
+
+fake = Faker()
 
 
 class ArticleFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = models.Article
+
+    abstract =  fake.text()
 
 
 class AuthorFactory(factory.django.DjangoModelFactory):

@@ -2,6 +2,7 @@ Django
 coveralls
 django-classy-settings
 django-cors-headers
+django-haystack
 djangorestframework
 factory-boy
 numpy
@@ -13,3 +14,4 @@ pytest-django
 pytest-factoryboy
 python-dotenv
 requests
+whoosh
