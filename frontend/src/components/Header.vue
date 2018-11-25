@@ -15,7 +15,8 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
- .logo{
-   height : 40px;
- }
+.logo{
+  height : 60px;
+  width: auto;
+}
 </style>
