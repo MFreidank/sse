@@ -8,6 +8,7 @@ from sse.core.models import Entity
 from sse.core.models import Match
 from sse.core.models import Tag
 from sse.core.vocabulary.match_text import generate_matches
+import logging
 import os
 import pickle
 import re
@@ -22,7 +23,7 @@ class Command(BaseCommand):
     batch_size = 5
     database = "pubmed"
     id_list_key = "IdList"
-    max_documents = 10
+    max_documents = 10000
     rettype = "medline"
     search_terms = ["liver", "Hippopotamus amphibius"]
 
@@ -72,9 +73,13 @@ class Command(BaseCommand):
         for search_term in self.search_terms:
             # create entrez data
             self.records = self.get_entrez_records(*args, search_term=search_term, **options)
+            logging.info("Created all the records")
             self.create_articles(*args, **options)
+            logging.info("Created all the articles")
             self.create_vocabulary_matches(*args, **options)
+            logging.info("Created the vocabulary matches")
             self.create_authors(*args, **options)
+            logging.info("Created the authors")
             # self.assign_articles_to_authors(*args, **options)
             # self.create_tags(*args, **options)
             # self.assign_tags_to_articles(*args, **options)
