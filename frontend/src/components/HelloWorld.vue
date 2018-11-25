@@ -12,7 +12,6 @@
             v-model="selectedFilter"
           >
           </v-treeview>
-          <v-btn class="error" @click="fetchData">DELETE_ME!</v-btn>
         </v-flex>
         <v-flex xs9>
           <v-autocomplete
@@ -55,7 +54,13 @@
               </div>
             </v-card-title>
           </v-card> -->
-          {{dummyArticles}}
+          <v-card class="my-2" v-for="article in dummyArticles" :key="article">
+            <v-card-title primary-title>
+              <div>
+                <div class="headline secondary--text" v-html="$options.filters.highlight(article.title, query)">{{article.title | highlight(query)}}</div>
+              </div>
+            </v-card-title>
+          </v-card>
           <!-- END OF RESULTS DISPLAY -->
         </v-flex>
       </v-layout>
@@ -74,16 +79,7 @@ export default {
       search: null,
       items: [],
       randomMedicalWords: [],
-      dummyArticles: [
-        /* {id: 0, title: 'Title of example aspirin article', text: 'Lorem ipsum dolor sit amet, Aspirin sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At glucose eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet...', date: '25 November 2018', show: false, filter: false},
-        {id: 1, title: 'Title of another article', text: 'Lorem antibodies dolor sit amet, leukemia sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, glucose diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet...', date: '01 December 2011', show: false, filter: false},
-        {id: 2, title: 'Title of awesome article about LSD', text: 'Lorem ipsum dolor sit amet, antibodies sadipscing elitr, sed diam hydrolic eirmod tempor LSD ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet...', date: '06 May 2015', show: false, filter: false},
-        {id: 3, title: 'Title of dummy article', text: 'Lorem rat dolor sit amet, yeast sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet...', date: '12 March 1977', show: false, filter: false},
-        {id: 4, title: 'Title of fake article', text: 'Lorem ipsum hydrolic pressure sit amet, consetetur sadipscing elitr, sed diam LSD eirmod tempor invidunt ut hair loss et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet...', date: '25 November 2018', show: false, filter: false},
-        {id: 5, title: 'Title of medical article', text: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet...', date: '22 March 2001', show: false, filter: false},
-        {id: 6, title: 'Title of article about diabetes', text: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed aspirin nonumy eirmod tempor invidunt ut labore et dolore magna yeast erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet...', date: '09 January 2017', show: false, filter: false},
-        {id: 7, title: 'Title of last article', text: 'Lorem ipsum dolor sit amet, hair loss sadipscing leukemia, sed diam rat eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet...', date: '30 January 2017', show: false, filter: false} */
-      ],
+      dummyArticles: [],
       query: '',
       selectedFilter: [],
       realData: {}
@@ -177,17 +173,17 @@ export default {
         })
     },
     fetchArticles (query) {
-      this.dummyArticles.push('bla')
-      /* this.$http.post(baseURI + 'search/',
+      this.$http.post(BASE_URI + 'search/',
         {'query': query},
         {headers: {'Content-type': 'application/json'}
         })
         .then((result) => {
           this.realData = result.data
           this.realData.forEach(element => {
+            /* TODO: Add show and filter booleans */
             this.dummyArticles.push(element)
           })
-        }) */
+        })
     }
   },
   filters: {
