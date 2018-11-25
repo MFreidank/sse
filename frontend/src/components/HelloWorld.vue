@@ -39,10 +39,9 @@
               </v-chip>
             </template>
           </v-autocomplete>
-
-          <!-- RESULTS DISPLAY -->
           {{articlesFound}}
-          <v-card class="my-2" v-for="article in dummyArticles" :key="article.index">
+          <!-- RESULTS DISPLAY -->
+          <v-card v-model="dummyArticles" class="my-2" v-for="article in dummyArticles" :key="article.index">
             <v-card-title primary-title>
               <div>
                 <div class="headline secondary--text" v-html="$options.filters.highlight(article.title, query)">{{article.title | highlight(query)}}</div>
@@ -127,6 +126,12 @@ export default {
     remove (item) {
       const index = this.randomMedicalWords.indexOf(item)
       if (index >= 0) this.randomMedicalWords.splice(index, 1)
+      for (let i = 0; i < this.dummyArticles.length; i++) {
+        if (this.dummyArticles[i].title.includes(item) || this.dummyArticles[i].title.includes(item.toLowerCase())) {
+          let id = this.dummyArticles[i].index
+          this.dummyArticles.splice(id, 1)
+        }
+      }
     },
     filteredDate (selectedFilter, id) {
       if ((selectedFilter.includes('Today') && this.dummyArticles[id].date.includes('25 November 2018')) ||
