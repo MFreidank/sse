@@ -80,7 +80,7 @@ class Command(BaseCommand):
 
         # create azure data
         self.cognitive_batches = self.get_cognitive_batches(*args, **options)
-        #self.create_cognitive_matches(*args, **options)
+        self.create_cognitive_matches(*args, **options)
 
     def get_article_data_as_keywords(self, record):
         return {
@@ -98,7 +98,7 @@ class Command(BaseCommand):
 
 
     def create_vocabulary_matches(self, *args, **options):
-        automaton = self.load_automaton(*args, **options)
+        self.automaton = self.load_automaton(*args, **options)
         articles = Article.objects.filter(abstract__isnull=False)
         entities = {
             entity.omop_id: entity
@@ -114,7 +114,7 @@ class Command(BaseCommand):
             )
             for article in articles
             for end, (omop_id, match) in generate_matches(
-                automaton,
+                self.automaton,
                 article.abstract,
             )
             if entities.get(omop_id)
@@ -154,16 +154,30 @@ class Command(BaseCommand):
 
         entity_names = {entity['name'] for entity in found_entities}
 
-        assert False  # continue working here
+        automaton_matches = {
+            omop_id: entity_name
+            for entity_name in entity_names
+            for _, (omop_id, _) in generate_matches(self.automaton, entity_name)
+        }
+
+        matches = []
+        for omop_id, entity_name in automaton_matches.items():
+            matches.append(Match(
+
+            ))
+            filtered_set = [entity for entity in found_entities if entity['name'] == entity_name]
+            import pdb
+            pdb.set_trace()
 
         Match.objects.bulk_create([
             Match(
                 article=self.get_article_for_document_id(document_id), # todo
-                entity=entities[found_entity['text']],                 # todo
+                entity=entities[omop_id],                 # todo
                 length=match.get('length'),
                 offset=match.get('offset'),
             )
             for entity in found_entities
+            for omop_id in omop_ids
             for match in entity['matches']
         ])
 
