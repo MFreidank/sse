@@ -29,6 +29,7 @@ yet contain.
 [Travis](https://travis-ci.org/escodebar/sse)
 
 Pitched and implemented as part of [BaselHack 2018](https://www.baselhack.ch).
+Our presentation slides are available [here](https://github.com/escodebar/sse/raw/master/presentation/Hippocrates_Presentation_20181125_FINAL.pdf).
 
 ### Setup
 
