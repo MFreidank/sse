@@ -1,6 +1,8 @@
 <template>
   <div>
-    <v-toolbar-title>Semantic Search Engine</v-toolbar-title>
+    <v-toolbar-title>    <mv-toolbar-img >
+        <img class="logo" src="./../../static/hippo.png" alt="Avatar">
+    </mv-toolbar-img> SSE Semantic Search Engine </v-toolbar-title>
   </div>
 </template>
 
@@ -12,4 +14,7 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+ .logo{
+   height : 40px;
+ }
 </style>
