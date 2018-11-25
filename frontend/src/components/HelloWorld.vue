@@ -82,7 +82,8 @@ export default {
       dummyArticles: [],
       query: '',
       selectedFilter: [],
-      realData: {}
+      realData: {},
+      realArticles: {}
     }
   },
   watch: {
@@ -178,9 +179,8 @@ export default {
         {headers: {'Content-type': 'application/json'}
         })
         .then((result) => {
-          this.realData = result.data
-          this.realData.forEach(element => {
-            /* TODO: Add show and filter booleans */
+          this.realArticles = result.data
+          this.realArticles.forEach(element => {
             this.dummyArticles.push(element)
           })
         })
@@ -193,6 +193,9 @@ export default {
       } else {
         searchTerm.forEach(element => {
           text = text.replace(element, '<span class=\'highlighting\'>' + element + '</span>')
+        })
+        searchTerm.forEach(element => {
+          text = text.replace(element.toLowerCase(), '<span class=\'highlighting\'>' + element.toLowerCase() + '</span>')
         })
         return text
       }
