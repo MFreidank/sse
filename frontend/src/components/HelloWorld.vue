@@ -42,22 +42,11 @@
 
           <!-- RESULTS DISPLAY -->
           {{articlesFound}}
-          <!-- <v-card v-if="filterArticles(query, article.id), filteredDate(selectedFilter, article.id), (article.show || article.filter)" class="my-2" v-for="article in dummyArticles" :key="article.id">
+          <v-card class="my-2" v-for="article in dummyArticles" :key="article.index">
             <v-card-title primary-title>
               <div>
                 <div class="headline secondary--text" v-html="$options.filters.highlight(article.title, query)">{{article.title | highlight(query)}}</div>
-                <span v-html="$options.filters.highlight($options.filters.truncateAbstract(article.text), query)">{{article.text | truncateAbstract | highlight(query)}}</span>
-              </div>
-              <v-spacer></v-spacer>
-              <div class="grey--text text-xs-right">
-                {{article.date}}
-              </div>
-            </v-card-title>
-          </v-card> -->
-          <v-card class="my-2" v-for="article in dummyArticles" :key="article">
-            <v-card-title primary-title>
-              <div>
-                <div class="headline secondary--text" v-html="$options.filters.highlight(article.title, query)">{{article.title | highlight(query)}}</div>
+                <span v-html="$options.filters.highlight($options.filters.truncateAbstract(article.abstract), query)">{{article.abstract | truncateAbstract | highlight(query)}}</span>
               </div>
             </v-card-title>
           </v-card>
