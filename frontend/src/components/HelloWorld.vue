@@ -11,8 +11,7 @@
             v-model="selectedFilter"
           >
           </v-treeview>
-          <v-btn @click="fetchData">Submit</v-btn>
-          {{realData}}
+          <v-btn class="error" @click="fetchData">DELETE_ME!</v-btn>
         </v-flex>
         <v-flex xs9>
           <v-autocomplete
@@ -41,7 +40,7 @@
           </v-autocomplete>
 
           <!-- RESULTS DISPLAY -->
-          <v-card v-if="(filterArticles(query, article.id) || filteredDate(selectedFilter, article.id)) && (article.show || article.filter)" class="my-2" v-for="article in dummyArticles" :key="article.id">
+          <v-card v-if="filterArticles(query, article.id), filteredDate(selectedFilter, article.id), (article.show || article.filter)" class="my-2" v-for="article in dummyArticles" :key="article.id">
             <v-card-title primary-title>
               <div>
                 <div class="headline secondary--text" v-html="$options.filters.highlight(article.title, query)">{{article.title | highlight(query)}}</div>

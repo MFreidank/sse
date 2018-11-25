@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-toolbar-title>Semantic Search Enging</v-toolbar-title>
+    <v-toolbar-title>Semantic Search Engine</v-toolbar-title>
   </div>
 </template>
 
