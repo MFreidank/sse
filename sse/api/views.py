@@ -1,3 +1,5 @@
+from django.db.models import Q
+from functools import reduce
 from rest_framework.generics import ListAPIView
 from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
@@ -28,9 +30,16 @@ class SearchView(ListAPIView):
     allowed_methods = ['post']
     queryset = Article.objects.all()
 
+    @classmethod
+    def get_filter(cls, search_entities):
+        return reduce(
+            lambda q_1, q_2: q_1 & q_2,
+            map(lambda entity: Q(abstract__contains=entity), search_entities)
+        )
+
     def filter_queryset(self, queryset):
-        entities = self.request.data.get('entities')
-        return queryset
+        entities = self.request.data.get('query')
+        return queryset.filter(SearchView.get_filter(entities))
 
     def post(self, request, *args, **kwargs):
         queryset = self.get_queryset()

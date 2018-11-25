@@ -16,6 +16,12 @@ class Base:
     CORS_ORIGIN_ALLOW_ALL = True
     DATABASE_ENGINE = cbs.env(None, key='DJANGO_DATABASE_ENGINE')
     DATABASE_NAME = cbs.env(None, key='DJANGO_DATABASE_NAME')
+    HAYSTACK_CONNECTIONS = {
+        'default': {
+            'ENGINE': 'haystack.backends.whoos_backend.WhooshEngine',
+            'PATH': os.path.join(BASE_DIR, 'whoooosh.idx'),
+        }
+    }
     INSTALLED_APPS = [
         'django.contrib.auth',
         'django.contrib.contenttypes',
@@ -23,6 +29,7 @@ class Base:
         'django.contrib.messages',
         'corsheaders',
         'rest_framework',
+        'haystack',
         'sse',
         'sse.api',
         'sse.core',
