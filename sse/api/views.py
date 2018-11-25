@@ -1,8 +1,10 @@
 from rest_framework.generics import ListAPIView
 from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
+from sse.core.models import Article
 from sse.core.models import Entity
 from .serializers import EntitySerializer
+from .serializers import ArticleSerializer
 
 
 class AutocompletionView(ListAPIView):
@@ -18,4 +20,20 @@ class AutocompletionView(ListAPIView):
         queryset = self.get_queryset()
         filtered_queryset = self.filter_queryset(queryset)
         serializer = EntitySerializer(filtered_queryset, many=True)
+        return Response(serializer.data)
+
+
+class SearchView(ListAPIView):
+
+    allowed_methods = ['post']
+    queryset = Article.objects.all()
+
+    def filter_queryset(self, queryset):
+        entities = self.request.data.get('entities')
+        return queryset
+
+    def post(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        filtered_queryset = self.filter_queryset(queryset)
+        serializer = ArticleSerializer(filtered_queryset, many=True)
         return Response(serializer.data)

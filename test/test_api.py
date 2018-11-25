@@ -16,8 +16,13 @@ def client():
 
 
 @pytest.fixture(scope="session")
-def payload():
+def autocompletion_payload():
     yield {'query': 'as'}
+
+
+@pytest.fixture(scope="session")
+def search_payload():
+    yield {'entities': ['lsd', 'diabetes']}
 
 
 @pytest.fixture(autouse=True)
@@ -28,7 +33,13 @@ def entities(entity_factory):
 
 
 @pytest.mark.django_db
-def test_autocompletion_endpoint(client, payload):
-    result = client.post('/api/autocompletion/', payload, format='json')
+def test_autocompletion_endpoint(client, autocompletion_payload):
+    result = client.post('/api/autocompletion/', autocompletion_payload, format='json')
     assert 200 == result.status_code
     assert {'name': 'aspirine'} in result.json()
+
+
+@pytest.mark.django_db
+def test_search_endpoint(client, search_payload):
+    result = client.post('/api/search/', search_payload, format='json')
+    assert 200 == result.status_code
