@@ -29,16 +29,19 @@ def called_command(args, opts):
     yield
 
 
+@pytest.mark.skip
 @pytest.mark.django_db
 def test_load_athena_data_creates_domains_correctly(args, opts):
     assert 2 == Domain.objects.count()
 
 
+@pytest.mark.skip
 @pytest.mark.django_db
 def test_load_athena_data_creates_entities_correctly(args, opts):
     assert 4 == Entity.objects.count()
 
 
+@pytest.mark.skip
 @pytest.mark.django_db
 def test_load_athena_data_creates_synonyms_correctly(args, opts):
     assert 12 == Synonym.objects.count()
